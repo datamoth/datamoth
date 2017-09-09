@@ -1,0 +1,11 @@
+*.class
+*.log
+
+
+# Gradle excludes from github/gitignore
+.gradle
+/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+WORKDIR={{WORKDIR}}
+NAMESPACE={{NAMESPACE}}
+PROJECT={{PROJECT}}
+
+while read oldrev newrev refname
+do
+	GIT_DIR=$WORKDIR/$NAMESPACE/$PROJECT/repo/.git datamot --deploy $NAMESPACE $PROJECT $(basename $refname) $newrev
+done

@@ -1,0 +1,33 @@
+import com.moowork.gradle.node.task.NodeTask
+
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "com.moowork.gradle:gradle-node-plugin:1.1.1"
+	}
+}
+
+apply plugin: "com.moowork.node"
+
+node {
+	version = "6.10.0"
+	npmVersion = "4.3.0"
+	download = true
+}
+
+task webpack(type: NodeTask, dependsOn: "npmInstall") {
+	def osName = System.getProperty("os.name").toLowerCase();
+	script = project.file("ui/node_modules/.bin/webpack")
+}
+
+task clean(type: Delete) {
+	delete "release"
+}
+
+npm_build.dependsOn "npmInstall"
+npm_run_build.dependsOn "npmInstall"
+task release(dependsOn: [  "clean", "npm_run_build" ])

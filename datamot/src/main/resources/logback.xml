@@ -1,0 +1,52 @@
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<!-- Filter out hbm2dll minor ERRORs -->
+				<!-- HHH000389: Unsuccessful: drop table -->
+				<!-- HHH000389: Unsuccessful: alter table -->
+				<!-- HHH000402: Using Hibernate built-in connection pool (not for production use!) -->
+				<expression>
+					return
+						message.contains("HHH000389")
+						|| message.contains("HHH000389")
+						|| message.contains("HHH000402")
+						|| message.contains("because it does not exist")
+						|| message.contains("Unable to load native-hadoop")
+					;
+				</expression>
+			</evaluator>
+			<OnMismatch>NEUTRAL</OnMismatch>
+			<OnMatch>DENY</OnMatch>
+		</filter>
+		<encoder>
+			<pattern>[%thread] %highlight(%-5level) %cyan(%logger{15}): %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>datamot-${bySecond}.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>[%thread] %-5level %logger{15}: %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.eclipse.jgit" level="info" />
+	<logger name="org.spark_project.jetty" level="info" />
+	<logger name="org.apache.hadoop.hdfs.DFSClient" level="info" />
+	<logger name="org.apache.hadoop.ipc.Client" level="info" />
+	<logger name="org.apache.hadoop.ipc.ProtobufRpcEngine" level="info" />
+	<logger name="org.apache.hadoop.hdfs.protocol.datatransfer.sasl.SaslDataTransferClient" level="info" />
+
+	<logger name="io.github.datamoth.dm" level="trace" additivity="false">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<root level="debug">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

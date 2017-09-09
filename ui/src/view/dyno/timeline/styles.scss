@@ -1,0 +1,17 @@
+.react-calendar-timeline .rct-items .rct-item {
+	border: none;
+	border-radius: 3px;
+	background-color: #f2711c;
+}
+
+.react-calendar-timeline .rct-items .rct-item.KILLED {
+	background-color: #db2828;
+}
+
+.react-calendar-timeline .rct-items .rct-item.FAILED {
+	background-color: #db2828;
+}
+
+.react-calendar-timeline .rct-items .rct-item.SUCCEEDED {
+	background-color: #21ba45;
+}

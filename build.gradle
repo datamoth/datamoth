@@ -1,0 +1,20 @@
+allprojects {
+	version '0.0.1'
+}
+
+task cleanUiAssets(type: Delete) {
+	delete 'datamot/src/main/resources/app.js'
+	delete 'datamot/src/main/resources/index.html'
+}
+
+task copyUiAssets(type: Copy, dependsOn: [ cleanUiAssets, ':ui:release', ]) {
+	from 'ui/release/'
+	into 'datamot/src/main/resources'
+}
+
+copyUiAssets.outputs.upToDateWhen { false }
+
+task release(dependsOn: [
+	':copyUiAssets',
+	':datamot:build'
+])

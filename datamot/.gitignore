@@ -1,0 +1,13 @@
+*.class
+*.log
+
+/src/main/resources/app.js
+/src/main/resources/index.html
+
+# Gradle excludes from github/gitignore
+.gradle
+/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+

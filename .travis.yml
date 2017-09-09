@@ -1,0 +1,22 @@
+language: java
+install: true
+script: ./gradlew release
+jdk: oraclejdk8
+
+before_deploy:
+    - export TARFILE=$(ls datamot/build/distributions/datamot-*.tar)
+    - export ZIPFILE=$(ls datamot/build/distributions/datamot-*.zip)
+
+deploy:
+    provider: releases
+    api_key: "$GITHUB_TOKEN"
+    skip_cleanup: true
+    file:
+        - "$TARFILE"
+        - "$ZIPFILE"
+    prerelease: true
+    on:
+        tags: true
+
+notifications:
+    email: false
