@@ -16,7 +16,7 @@ mainClassName = 'io.github.datamoth.dm.Application'
 
 task datamot(dependsOn: 'build', type: Exec) {
 	workingDir 'build/distributions'
-	commandLine 'tar', '-xf', 'datamot.tar'
+	commandLine 'tar', '-xf', 'datamot-' + version + '.tar'
 }
 
 configurations {

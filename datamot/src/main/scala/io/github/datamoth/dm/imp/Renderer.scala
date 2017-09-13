@@ -100,7 +100,7 @@ class Renderer(cfg: Renderer.Config) {
 				val pdir = new File(srcDir, conf.getString("run"))
 				val plugConf = conf.getConfig(s"with.${profile}").root.unwrapped
 
-				plugins += api.Plugin(location = api.Location(name), run = api.Location(conf.getString("run")), conf = content)
+				plugins += api.Plugin(location = api.Location(name), run = api.Location(conf.getString("run")), conf = Z.render(conf))
 				walk(pdir, dstFile.getParentFile, cfg.sysvars, profile, (srcFile: File, dstFile: File, sc: Scope) => {
 					scope.asScala.keys.foreach{ k => if (!sc.containsKey(k)) { sc.put(k, scope.get(k)) } }
 					plugConf.asScala.keys.foreach{ k => sc.put(k, plugConf.get(k)) }
