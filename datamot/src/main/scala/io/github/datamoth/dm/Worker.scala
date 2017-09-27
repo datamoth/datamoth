@@ -115,6 +115,8 @@ object Worker {
 											case Ok(pf) => act match {
 												case "list-datasets" => who ! Res(req = req, data = datamot.getProject(ns, pr, rf, pf).datasets)
 												case "get-project" => who ! Res(req = req, data = datamot.getProject(ns, pr, rf, pf))
+												case "get-plugins" => who ! Res(req = req, data = datamot.getProject(ns, pr, rf, pf).plugins)
+												case "get-databundles" => who ! Res(req = req, data = datamot.getProject(ns, pr, rf, pf).databundles)
 												case "get-files" => {
 													if (!req.has("paths")) {
 														who ! Fail(req = req, data = "paths required")
