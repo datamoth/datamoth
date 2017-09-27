@@ -77,6 +77,7 @@ object Worker {
 
 		override def receive = {
 			case (token: String, req: Req) => {
+				L.info("Got request: {}", req)
 				val who = sender
 				val wkr = workerOf(token)
 				wkr ! (who, req)
@@ -100,6 +101,7 @@ object Worker {
 
 		override def receive = {
 			case (who: ActorRef, req: Req) => {
+				L.info("Got request: {}", req)
 				req.get("action") match {
 					case Ok(act) =>	act match {
 						case "list-projects"	=> who ! Res(req = req, data = datamot.projects)

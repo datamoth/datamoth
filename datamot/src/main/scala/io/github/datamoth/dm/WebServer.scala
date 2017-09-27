@@ -32,13 +32,6 @@ import akka.http.scaladsl.server.RouteResult
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Sink
 
-import com.softwaremill.session.{SessionConfig, SessionManager}
-import com.softwaremill.session.SessionDirectives._
-import com.softwaremill.session.SessionOptions._
-import com.softwaremill.session.BasicSessionEncoder
-import com.softwaremill.session.SessionSerializer
-import com.softwaremill.session.MultiValueSessionSerializer
-
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 import ch.megard.akka.http.cors.CorsDirectives._
 import ch.megard.akka.http.cors.CorsSettings
@@ -49,79 +42,37 @@ import scala.concurrent.duration._
 
 import java.io.IOException
 
+import scala.collection.concurrent.{ TrieMap ⇒ SessionStore }
 
 import scalaz._
 import Scalaz._
 
 
-case class Result(code: Int, msg: String, data: Any)
-object Result {
-	val SUCCESS = 0
-	val FAILURE = 1
-	def ok: Result = Result(SUCCESS, "ok", "ok")
-	def ok(data: Any): Result = Result(SUCCESS, "ok", data)
-	def oops(data: Any): Result = Result(FAILURE, "oops", data)
-	def oops(msg: String): Result = Result(FAILURE, msg, Array())
-	def oops(e: Exception): Result = Result(FAILURE, e.getMessage, Array())
-}
-
 class WebServer extends Directives with JacksonSupport {
 
-	import io.github.datamoth.dm.Worker
+	import HttpCharsets._
+	import Http.IncomingConnection
 
-	case class PikaState(user: String)
-
-	object PikaState {
-		private val USER = "user"
-		implicit def serializer: MultiValueSessionSerializer[PikaState] = {
-			new MultiValueSessionSerializer[PikaState](
-				toMap = { state: PikaState =>
-					Map(
-						USER -> state.user
-					)
-				},
-				fromMap = { m: Map[String, String] =>
-					if (m.contains(USER)) {
-						Try(PikaState(
-							user = m(USER)
-						))
-					} else {
-						Failure[PikaState](new Exception("Failed to parse session"))
-					}
-				}
-			)
-		}
+	case class Result(code: Int, msg: String, data: Any)
+	object Result {
+		val SUCCESS = 0
+		val FAILURE = 1
+		def ok: Result = Result(SUCCESS, "ok", "ok")
+		def ok(data: Any): Result = Result(SUCCESS, "ok", data)
+		def oops(data: Any): Result = Result(FAILURE, "oops", data)
+		def oops(msg: String): Result = Result(FAILURE, msg, Array())
+		def oops(e: Exception): Result = Result(FAILURE, e.getMessage, Array())
 	}
-
-	val sessionConfig = SessionConfig.default("please_refactor_me________________________________________________________________")
-
-	implicit val sessionSerializer = new MultiValueSessionSerializer[Map[String, String]](identity, Try(_))
-	implicit val sessionEncoder = new BasicSessionEncoder[PikaState]
-	implicit val sessionManager = new SessionManager[PikaState](sessionConfig)
 
 	private val L = LoggerFactory.getLogger(classOf[WebServer])
 
-	def getConfig(): Config = {
-		try {
-			ConfigFactory.load.withValue("admin.origin", ConfigValueFactory.fromAnyRef(sys.env("DATAMOT_ADMIN_REPO_DIR")))
-		} catch {
-			case e: Exception => ConfigFactory.load
-		}
-	}
-
 	def start(host: String, port: Int): Unit = {
-
-		import HttpCharsets._
-		import Http.IncomingConnection
 
 		implicit val timeout = Timeout(60 seconds)
 		implicit val system = ActorSystem("pikazu")
 		implicit val materializer = ActorMaterializer()
 		implicit val executionContext = system.dispatcher
 
-
-		val rand = scala.util.Random
-		def gentoken = rand.alphanumeric.take(10).mkString
 		val root = system.actorOf(Props[Worker.Root], "root")
 
 		implicit def exceptionHandler: ExceptionHandler = ExceptionHandler {
@@ -140,21 +91,24 @@ class WebServer extends Directives with JacksonSupport {
 					path("app.js") { getFromResource("app.js") } ~
 					path("enterthematrix") { get {
 						parameters("user") { (user) =>
-							setSession(oneOff, usingCookies, PikaState(user)) { ctx =>
-								ctx.complete{ Result.ok(user) }
+							setCookie(HttpCookie("user", value = user)) {
+								complete{ Result.ok(user) }
 							}
 						}
 					} } ~
 					path("leavethematrix") { get {
-						invalidateSession(oneOff, usingCookies) {
+						deleteCookie("user") {
 							complete{ Result.ok }
 						}
 					} } ~
 					path("whoami") { get {
-						optionalSession(oneOff, usingCookies) { stateOpt => stateOpt match {
-							case None => complete{ Result.oops("Not authenticated") }
-							case Some(state) => complete{ Result.ok(state.user) }
-						} }
+						optionalCookie("user") { co ⇒
+							if (co.isEmpty) {
+								complete{ Result.oops("Not authenticated") }
+							} else {
+								complete{ Result.ok(co.get) }
+							}
+						}
 					} } ~
 					pathPrefix("apiv1") {
 						val token = "datamotapi"
@@ -171,16 +125,17 @@ class WebServer extends Directives with JacksonSupport {
 						} } } }
 					} ~
 					pathPrefix("api") {
-						requiredSession(oneOff, usingCookies) { state =>
-							val token = state.user
+						cookie("user") { c =>
+							val token = c.value
 							path(Segments) { sg => { parameterSeq { params => {
 								val pars = params.groupBy(_._1).map{ case (k, v) => k -> v.map(_._2).toList }
 								val args = pars |+| List("namespace", "project", "ref", "profile").zip(sg.map(List(_))).toMap
 								val msg = (token, Worker.Req(args = args))
-								onSuccess(root ? msg) { resp =>
+								L.info("Got request: {}", msg)
+								onSuccess(root ? msg) { resp ⇒
 									resp match {
-										case r: Worker.Res => complete{ Result.ok(resp) }
-										case r: Worker.Fail => complete{ Result.oops(resp) }
+										case r: Worker.Res	⇒ complete{ Result.ok(resp) }
+										case r: Worker.Fail	⇒ complete{ Result.oops(resp) }
 									}
 								}
 							} } } }
