@@ -1,6 +1,5 @@
 import _ from 'lodash'
-import { delay } from 'redux-saga'
-import { call, put, take, takeEvery, select } from 'redux-saga/effects'
+import { put, take, select } from 'redux-saga/effects'
 
 import * as EV from '../../api/base'
 import api from '../../api'
@@ -39,9 +38,7 @@ function* on_open_project() {
 		const [ namespaces, projects ] = yield select((state) => [ state.namespaces.list, state.projects.list])
 		const nidx = _.findIndex(namespaces, (n) => (n.name === namespace))
 		const pidx = _.findIndex(projects, (p) => (p.name === project && p.namespace === namespace))
-		console.log(nidx)
 		const p = projects[pidx]
-		const n = namespaces[nidx]
 		yield put(api.openNamespace(nidx))
 		yield take(EV.DYNO_OPEN_NAMESPACE_SUCC)
 		yield put(api.openProject(pidx))
@@ -62,7 +59,7 @@ function* on_open_branch() {
 		const { branches, bi } = yield select((state) => ({ branches: state.branches.list, bi: state.currentBranch }))
 		const project = projects[pi]
 		const reftemp = branches[bi].name.split("/")
-		const ref = reftemp[reftemp.length-1]
+		const ref = reftemp[reftemp.length - 1]
 		yield put(api.commits(project.namespace, project.name, ref))
 		yield take(EV.DYNO_COMMIT_LIST_WAIT)
 		yield put(api.profiles(project.namespace, project.name, ref))
@@ -84,7 +81,7 @@ function* on_open_profile() {
 
 		const project = projects[pi]
 		const reftemp = branches[bi].name.split("/")
-		const ref = reftemp[reftemp.length-1]
+		const ref = reftemp[reftemp.length - 1]
 		const profile = profiles[fi].name
 
 		yield put(api.compile(project.namespace, project.name, ref, profile))

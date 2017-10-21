@@ -1,22 +1,11 @@
 import React from 'react'
-import {
-	Label, Table, Input, Accordion, Icon, Feed
-	, List, Card, Container, Grid 
-	, Image, Button, Dropdown, Segment, Header, Checkbox
-	, Message, Dimmer, Sidebar, Menu
-} from 'semantic-ui-react'
-import { Link } from 'react-router';
-import { connect } from 'react-redux'
-
+import { Container } from 'semantic-ui-react'
 
 import Login from './auth/login'
 import Walker from './walker'
 import Timeline from './timeline'
 import Navigator from './navi'
 import Deploy from './deploy'
-import Graph from './graph'
-import Help from './help'
-
 
 class Start extends React.Component {
 
@@ -24,6 +13,20 @@ class Start extends React.Component {
 		super(props)
 		this.state = {
 			item: localStorage.getItem("datamot-main-page") || "timeline"
+		}
+		this.showDeploy = this.showDeploy.bind(this)
+		this.showWalker = this.showWalker.bind(this)
+		this.showTimeline = this.showTimeline.bind(this)
+	}
+
+	get content() {
+		switch(this.state.item) {
+			case 'deploy':
+				return <Deploy />
+			case 'walker':
+				return <Walker />
+			case 'timeline':
+				return <Timeline />
 		}
 	}
 
@@ -47,18 +50,15 @@ class Start extends React.Component {
 			<Container fluid >
 				<Login />
 				<Navigator
-					showDeploy={::this.showDeploy}
-					showWalker={::this.showWalker}
-					showTimeline={::this.showTimeline}
+					showDeploy={this.showDeploy}
+					showWalker={this.showWalker}
+					showTimeline={this.showTimeline}
 					/>
-				{ (this.state.item === "deploy") && <Deploy /> }
-				{ (this.state.item === "walker") && <Walker /> }
-				{ (this.state.item === "timeline") && <Timeline /> }
+				{this.content}
 			</Container>
 		)
 	}
 
 }
-
 
 export default Start

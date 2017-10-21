@@ -1,15 +1,8 @@
 import React from 'react'
-import {
-	Label, Form, Input, Accordion, Icon, Feed
-	, List, Menu, Card, Container, Grid, Link
-	, Image, Button, Dropdown, Segment, Header, Checkbox
-	, Message
-} from 'semantic-ui-react'
+import { List, Dropdown } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 
-
 import api from '../../../api'
-
 
 class NavProfiles extends React.Component {
 
@@ -41,12 +34,13 @@ class NavProfiles extends React.Component {
 	}
 }
 
-const empty = { name: "" }
-function mapper(state, props) {
+function mapStateToProps(state, props) {
+	const empty = { name: '' }
+
 	return {
 		profiles: state.profiles
 		, active: state.profiles.list[state.currentProfile] || empty
 	}
 }
 
-export default connect(mapper)(NavProfiles)
+export default connect(mapStateToProps)(NavProfiles)

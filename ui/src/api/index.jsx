@@ -3,7 +3,6 @@ import Promise from 'bluebird'
 
 import * as EV from './base'
 
-
 const MATRIX_BASE_URL = EV.MATRIX_BASE_URL
 
 function match_event(cmd) {
@@ -173,7 +172,7 @@ function openNamespace(name) {
 				EV.DYNO_OPEN_NAMESPACE_FAIL
 			]
 			, promise: () => {
-				return new Promise((resolve, reject) => {
+				return new Promise((resolve) => {
 					resolve(EV.succ(idx))
 				})
 			}
@@ -196,7 +195,7 @@ function openProject(namespace, name) {
 				EV.DYNO_OPEN_PROJECT_FAIL
 			]
 			, promise: () => {
-				return new Promise((resolve, reject) => {
+				return new Promise((resolve) => {
 					resolve(EV.succ(idx))
 				})
 			}
@@ -219,7 +218,7 @@ function openBranch(namespace, project, branch) {
 				EV.DYNO_OPEN_BRANCH_FAIL
 			]
 			, promise: () => {
-				return new Promise((resolve, reject) => {
+				return new Promise((resolve) => {
 					setTimeout(() => resolve(EV.succ(idx)), 0)
 				})
 			}
@@ -242,7 +241,7 @@ function openProfile(namespace, project, branch, profile) {
 				EV.DYNO_OPEN_PROFILE_FAIL
 			]
 			, promise: () => {
-				return new Promise((resolve, reject) => {
+				return new Promise((resolve) => {
 					resolve(EV.succ(idx))
 				})
 			}

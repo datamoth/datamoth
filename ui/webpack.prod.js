@@ -1,8 +1,7 @@
-var webpack = require("webpack");
+const webpack = require("webpack");
 const webpackMerge = require('webpack-merge');
 const commonConfig = require('./webpack.base.js');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const GLOBALS = {
 	'process.env': {
@@ -31,12 +30,6 @@ module.exports = function(env) {
 				minimize: true,
 				debug: false
 			}),
-			/*
-			new ExtractTextPlugin({
-				filename: 'css/app.css',
-				allChunks: true
-			}),
-			*/
 			new webpack.optimize.UglifyJsPlugin({
 				beautify: false,
 				mangle: {

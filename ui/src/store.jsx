@@ -8,10 +8,9 @@ import api from './api'
 import rootSaga from './saga/dyno/root'
 import rootReducer from './reducer/dyno/root'
 
-
 function promiseMiddleware() {
 	return (next) => (action) => {
-		const { promise, types, ...rest } = action
+		const { promise, types, ...rest } = action  // eslint-disable-line
 		if (!promise) {
 			return next(action)
 		}

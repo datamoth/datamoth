@@ -1,17 +1,14 @@
 import React from 'react'
 import {
-	Label, Table, Input, Accordion, Icon, Feed, Divider
-	, List, Card, Container, Grid 
-	, Image, Button, Dropdown, Segment, Header, Checkbox
-	, Message, Dimmer, Menu, Sidebar
+	Label, Table, Icon, Divider
+	, Container, Grid 
+	, Button, Segment, Header
+	, Menu
 } from 'semantic-ui-react'
-import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import AceEditor from 'react-ace'
 
 import 'react-select/dist/react-select.css'
-
 import moment from 'moment'
 
 import api from '../../../api'
@@ -20,14 +17,14 @@ import Editor from './editor'
 import 'brace/mode/xml'
 import 'brace/theme/github'
 
-
-function formatBytes(bytes,decimals) {
-   if(bytes == 0) return '0 Bytes';
-   var k = 1000,
-       dm = decimals || 2,
-       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-       i = Math.floor(Math.log(bytes) / Math.log(k));
-   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+function formatBytes(bytes, decimals) {
+	if (bytes === 0)
+		return '0 Bytes';
+	const k = 1000,
+		dm = decimals || 2,
+		sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+		i = Math.floor(Math.log(bytes) / Math.log(k));
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
 function statusIcon(status, size) {
@@ -55,11 +52,6 @@ function dspath(path) {
 function dshuepath(hue, path) {
 	return hue + dspath(path)
 }
-
-const colors = [
-	'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue',
-	'violet', 'purple', 'pink', 'brown', 'grey', 'black',
-]
 
 class Dir extends React.Component {
 	render() {

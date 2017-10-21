@@ -1,6 +1,4 @@
-import { combineReducers } from 'redux'
 import * as EV from '../../api/base'
-
 
 const initialState = {
 	name: ""

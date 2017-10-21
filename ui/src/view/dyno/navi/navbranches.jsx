@@ -1,15 +1,8 @@
 import React from 'react'
-import {
-	Label, Form, Input, Accordion, Icon, Feed
-	, List, Menu, Card, Container, Grid, Link
-	, Image, Button, Dropdown, Segment, Header, Checkbox
-	, Message
-} from 'semantic-ui-react'
+import { List, Dropdown } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 
-
 import api from '../../../api'
-
 
 function getref(path) {
 	const refpath = path.split("/")
@@ -47,12 +40,12 @@ class NavBranches extends React.Component {
 	}
 }
 
-const empty = { name: "" }
-function mapper(state, props) {
+function mapStateToProps(state, props) {
+	const empty = { name: "" }
 	return {
 		branches: state.branches
 		, active: state.branches.list[state.currentBranch] || empty
 	}
 }
 
-export default connect(mapper)(NavBranches)
+export default connect(mapStateToProps)(NavBranches)
