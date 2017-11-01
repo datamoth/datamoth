@@ -2,7 +2,6 @@ import { combineReducers } from 'redux'
 import * as EV from '../../api/base'
 import authReducer from './auth.jsx'
 
-
 const create = (data) => Object.assign(data, {
 	loading: false
 	, failure: false
@@ -18,7 +17,6 @@ const app = {
 			coordinators: []
 			, databundles: []
 			, datasets: []
-			, deploy: {}
 			, errors: []
 			, meta: {}
 			, workflows: []
@@ -106,7 +104,6 @@ const analysisReducer = (state = app.analysis, action) => {
 					coordinators: []
 					, databundles: []
 					, datasets: []
-					, deploy: {}
 					, errors: []
 					, meta: {}
 					, workflows: []

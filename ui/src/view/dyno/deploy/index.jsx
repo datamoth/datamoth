@@ -1,17 +1,13 @@
 import React from 'react'
 import {
-	Label, Form, Input, Accordion, Icon, Feed
-	, List, Menu, Card, Container, Grid, Divider
-	, Image, Button, Dropdown, Segment, Header, Checkbox
-	, Message, Dimmer
+	Icon, Grid
+	, Segment, Header, Checkbox
+	, Dimmer
 } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 
-import api from '../../../api'
-
 import Dashboard from './dashboard'
 import CommitLog from './commitlog'
-
 
 class Deploy extends React.Component {
 	render() {

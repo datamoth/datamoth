@@ -1,6 +1,5 @@
 import React from 'react'
-
-
+import PropTypes from 'prop-types'
 
 class EmojiText extends React.Component {
 
@@ -15,7 +14,14 @@ class EmojiText extends React.Component {
 			</p>
 		)
 	}
+}
 
+EmojiText.propTypes = {
+	text: PropTypes.string
+}
+
+EmojiText.defaultProps = {
+	text: ''
 }
 
 export { EmojiText }

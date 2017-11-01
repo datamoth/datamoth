@@ -1,16 +1,10 @@
 import React from 'react'
-import {
-	Label, Table, Input, Accordion, Icon, Feed, Divider
-	, List, Card, Container, Grid 
-	, Image, Button, Dropdown, Segment, Header, Checkbox
-	, Message, Dimmer, Menu, Sidebar
-} from 'semantic-ui-react'
+import PropTypes from 'prop-types'
+import { Container, Menu } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import AceEditor from 'react-ace'
 
 import 'react-select/dist/react-select.css'
-
-import api from '../../../api'
 
 import 'brace/mode/xml'
 import 'brace/mode/python'
@@ -64,13 +58,20 @@ class Editor extends React.Component {
 			</Container>
 		)
 	}
-
 }
 
-function mapper(state, props) {
+Editor.propTypes = {
+	editor: PropTypes.array
+}
+
+Editor.defaultProps = {
+	editor: []
+}
+
+function mapStateToProps(state) {
 	return {
 		editor: state.editor
 	}
 }
 
-export default connect(mapper)(Editor)
+export default connect(mapStateToProps)(Editor)

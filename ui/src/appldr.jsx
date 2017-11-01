@@ -8,7 +8,9 @@ import Router from './router';
 
 const render = (Component) => {
 	ReactDOM.render(
-		<AppContainer><Provider store={Store}>{Component}</Provider></AppContainer>,
+		<AppContainer>
+			<Provider store={Store}>{Component}</Provider>
+		</AppContainer>,
 		document.querySelector("#app")
 	);
 }

@@ -1,5 +1,4 @@
-export const MATRIX_BASE_URL = MATRIX_ENTRANCE
-
+export const MATRIX_BASE_URL = window.MATRIX_ENTRANCE
 
 export const DYNO_POLL_WAIT = 'DYNO_POLL_WAIT'
 export const DYNO_POLL_SUCC = 'DYNO_POLL_SUCC'
